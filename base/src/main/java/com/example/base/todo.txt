@@ -1,0 +1,39 @@
+协变 逆变？
+
+kotlin泛型型变，和java的区别。为什么叫声明处型变？kotlin的使用时型变指什么？
+仅仅生产out——return返回值，in消费——作为参数传入
+out 时C<Derived>可以安全的作为C<Base>的子类，可以这样赋值：C<Base> = C<Derived>（java是不允许的）
+
+为什么java不允许C<Base> = C<Derived>？考虑下面代码：
+// Java
+List<String> strs = new ArrayList<String>();
+
+// Java reports a type mismatch here at compile-time.
+List<Object> objs = strs;
+
+// What if it didn't?
+// We would be able to put an Integer into a list of Strings.
+objs.add(1);
+
+// And then at runtime, Java would throw
+// a ClassCastException: Integer cannot be cast to String
+String s = strs.get(0);
+
+kotlin是如何解决上述问题的？声明为out T，承诺只生产，不修改。
+在声明的时候指定了in或out来指示是否协变，此为kotlin的声明处协变。
+
+
+java的为什么叫使用处型变？ C<? extends String>
+
+类型投影，kotlin的使用处型变。
+fun copy(from: Array<out Any>, to: Array<Any>) { ... }
+This is type projection, which means that from is not a simple array, but is rather a restricted (projected) one
+不同于泛型函数：
+fun <T> singletonList(item: T): List<T> {
+    // ...
+}
+函数前面有泛型参数声明<T>
+泛型函数调用时需要指定泛型参数singletonList<Int>(1)
+
+泛型约束用“:”，类似java的extends
+fun <T : Comparable<T>> sort(list: List<T>) {  ... }

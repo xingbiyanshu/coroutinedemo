@@ -11,6 +11,7 @@ import kotlinx.coroutines.yield
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
+import kotlin.properties.Delegates
 
 abstract class BaseManager {
 
@@ -18,6 +19,11 @@ abstract class BaseManager {
 
     private val sessions by lazy {
         mutableMapOf<String, Session>()
+    }
+
+    val name: String by Delegates.observable("<no name>") {
+            prop, old, new ->
+        println("$old -> $new")
     }
 
     companion object{
